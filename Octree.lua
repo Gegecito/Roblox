@@ -1,15 +1,5 @@
--- CREDITS GO TO QUENTY!
---[=[
-	# MODIFIED BY PLASMA_NODE #
+-- credits to quenty
 
-	Octree implementation utilities. Primarily this utility code
-	should not be used directly and should be considered private to
-	the library.
-
-	Use [Octree](/api/Octree) instead of this library directly.
-
-	@class OctreeRegionUtils
-]=]
 --[=[
 	Debug drawing library useful for debugging 3D abstractions. One of
 	the more useful utility libraries.
@@ -45,43 +35,18 @@ local ORIGINAL_DEFAULT_COLOR = Color3.new(1, 0, 0)
 local Draw = {}
 Draw._defaultColor = ORIGINAL_DEFAULT_COLOR
 
---[=[
-	Sets the Draw's drawing color.
-	@param color Color3 -- The color to set
-]=]
 function Draw.setColor(color)
 	Draw._defaultColor = color
 end
 
---[=[
-	Resets the drawing color.
-]=]
 function Draw.resetColor()
 	Draw._defaultColor = ORIGINAL_DEFAULT_COLOR
 end
 
---[=[
-	Sets the Draw library to use a random color.
-]=]
 function Draw.setRandomColor()
 	Draw.setColor(Color3.fromHSV(math.random(), 0.5+0.5*math.random(), 1))
 end
 
---[=[
-	Draws a ray for debugging.
-
-	```lua
-	local ray = Ray.new(Vector3.new(0, 0, 0), Vector3.new(0, 10, 0))
-	Draw.ray(ray)
-	```
-
-	@param ray Ray
-	@param color Color3? -- Optional color to draw in
-	@param parent Instance? -- Optional parent
-	@param diameter number? -- Optional diameter
-	@param meshDiameter number? -- Optional mesh diameter
-	@return BasePart
-]=]
 function Draw.ray(ray, color, parent, meshDiameter, diameter)
 	assert(typeof(ray) == "Ray", "Bad typeof(ray) for Ray")
 
@@ -142,25 +107,7 @@ function Draw.ray(ray, color, parent, meshDiameter, diameter)
 	return part
 end
 
---[=[
-	Updates the rendered ray to the new color and position.
-	Used for certain scenarios when updating a ray on
-	renderstepped would impact performance, even in debug mode.
 
-	```lua
-	local ray = Ray.new(Vector3.new(0, 0, 0), Vector3.new(0, 10, 0))
-	local drawn = Draw.ray(ray)
-
-	RunService.RenderStepped:Connect(function()
-		local newRay = Ray.new(Vector3.new(0, 0, 0), Vector3.new(0, 10*math.sin(os.clock()), 0))
-		Draw.updateRay(drawn, newRay Color3.new(1, 0.5, 0.5))
-	end)
-	```
-
-	@param part Ray part
-	@param ray Ray
-	@param color Color3
-]=]
 function Draw.updateRay(part, ray, color)
 	color = color or part.Color
 
@@ -184,19 +131,7 @@ function Draw.updateRay(part, ray, color)
 	end
 end
 
---[=[
-	Render text in 3D for debugging. The text container will
-	be sized to fit the text.
 
-	```lua
-	Draw.text(Vector3.new(0, 10, 0), "Point")
-	```
-
-	@param adornee Instance | Vector3 -- Adornee to rener on
-	@param text string -- Text to render
-	@param color Color3? -- Optional color to render
-	@return Instance
-]=]
 function Draw.text(adornee, text, color)
 	if typeof(adornee) == "Vector3" then
 		local attachment = Instance.new("Attachment")
@@ -288,38 +223,11 @@ function Draw._textOnAdornee(adornee, text, color)
 	return billboardGui
 end
 
---[=[
-	Renders a sphere at the given point in 3D space.
-
-	```lua
-	Draw.sphere(Vector3.new(0, 10, 0), 10)
-	```
-
-	Great for debugging explosions and stuff.
-
-	@param position Vector3 -- Position of the sphere
-	@param radius number -- Radius of the sphere
-	@param color Color3? -- Optional color
-	@param parent Instance? -- Optional parent
-	@return BasePart
-]=]
 function Draw.sphere(position, radius, color, parent)
 	return Draw.point(position, color, parent, radius*2)
 end
 
---[=[
-	Draws a point for debugging in 3D space.
 
-	```lua
-	Draw.point(Vector3.new(0, 25, 0), Color3.new(0.5, 1, 0.5))
-	```
-
-	@param position Vector3 | CFrame -- Point to Draw
-	@param color Color3? -- Optional color
-	@param parent Instance? -- Optional parent
-	@param diameter number? -- Optional diameter
-	@return BasePart
-]=]
 function Draw.point(position, color, parent, diameter)
 	if typeof(position) == "CFrame" then
 		position = position.Position
@@ -362,19 +270,7 @@ function Draw.point(position, color, parent, diameter)
 	return part
 end
 
---[=[
-	Renders a point with a label in 3D space.
 
-	```lua
-	Draw.labelledPoint(Vector3.new(0, 10, 0), "AI target")
-	```
-
-	@param position Vector3 | CFrame -- Position to render
-	@param label string -- Label to render on the point
-	@param color Color3? -- Optional color
-	@param parent Instance? -- Optional parent
-	@return BasePart
-]=]
 function Draw.labelledPoint(position, label, color, parent)
 	if typeof(position) == "CFrame" then
 		position = position.Position
@@ -387,16 +283,6 @@ function Draw.labelledPoint(position, label, color, parent)
 	return part
 end
 
---[=[
-	Renders a CFrame in 3D space. Includes each axis.
-
-	```lua
-	Draw.cframe(CFrame.Angles(0, math.pi/8, 0))
-	```
-
-	@param cframe CFrame
-	@return Model
-]=]
 function Draw.cframe(cframe)
 	local model = Instance.new("Model")
 	model.Name = "DebugCFrame"
@@ -427,19 +313,6 @@ function Draw.cframe(cframe)
 	return model
 end
 
---[=[
-	Draws a part in 3D space
-
-	```lua
-	Draw.part(part, Color3.new(1, 1, 1))
-	```
-
-	@param template BasePart
-	@param cframe CFrame
-	@param color Color3?
-	@param transparency number
-	@return BasePart
-]=]
 function Draw.part(template, cframe, color, transparency)
 	assert(typeof(template) == "Instance" and template:IsA("BasePart"), "Bad template")
 
@@ -485,18 +358,6 @@ function Draw._sanitize(inst)
 	end
 end
 
---[=[
-	Renders a box in 3D space. Great for debugging bounding boxes.
-
-	```lua
-	Draw.box(Vector3.new(0, 5, 0), Vector3.new(10, 10, 10))
-	```
-
-	@param cframe CFrame | Vector3 -- CFrame of the box
-	@param size Vector3 -- Size of the box
-	@param color Color3 -- Optional Color3
-	@return BasePart
-]=]
 function Draw.box(cframe, size, color)
 	assert(typeof(size) == "Vector3", "Bad size")
 
@@ -533,33 +394,10 @@ function Draw.box(cframe, size, color)
 	return part
 end
 
---[=[
-	Renders a region3 in 3D space.
-
-	```lua
-	Draw.region3(Region3.new(Vector3.new(0, 0, 0), Vector3.new(10, 10, 10)))
-	```
-
-	@param region3 Region3 -- Region3 to render
-	@param color Color3? -- Optional color3
-	@return BasePart
-]=]
 function Draw.region3(region3, color)
 	return Draw.box(region3.CFrame, region3.Size, color)
 end
 
---[=[
-	Renders a terrain cell in 3D space. Snaps the position
-	to the nearest position.
-
-	```lua
-	Draw.terrainCell(Vector3.new(0, 0, 0))
-	```
-
-	@param position Vector3 -- World space position
-	@param color Color3? -- Optional color to render
-	@return BasePart
-]=]
 function Draw.terrainCell(position, color)
 	local size = Vector3.new(4, 4, 4)
 
@@ -631,38 +469,11 @@ function Draw.screenPoint(position, parent, color, diameter)
 	return frame
 end
 
---[=[
-	Draws a vector in 3D space.
-
-	```lua
-	Draw.vector(Vector3.new(0, 0, 0), Vector3.new(0, 1, 0))
-	```
-
-	@param position Vector3 -- Position of the vector
-	@param direction Vector3 -- Direction of the vector. Determines length.
-	@param color Color3? -- Optional color
-	@param parent Instance? -- Optional instance
-	@param meshDiameter number? -- Optional diameter
-	@return BasePart
-]=]
 function Draw.vector(position, direction, color, parent, meshDiameter)
 	return Draw.ray(Ray.new(position, direction), color, parent, meshDiameter)
 end
 
---[=[
-	Draws a ring in 3D space.
 
-	```lua
-	Draw.ring(Vector3.new(0, 0, 0), Vector3.new(0, 1, 0), 10)
-	```
-
-	@param ringPos Vector3 -- Position of the center of the ring
-	@param ringNorm Vector3 -- Direction of the ring.
-	@param ringRadius number? -- Optional radius for the ring
-	@param color Color3? -- Optional color
-	@param parent Instance? -- Optional instance
-	@return BasePart
-]=]
 function Draw.ring(ringPos, ringNorm, ringRadius, color, parent)
 	local ringCFrame = CFrame.new(ringPos, ringPos + ringNorm)
 
@@ -727,59 +538,19 @@ local OctreeRegionUtils = {}
 	@param region OctreeRegion<T>
 	@return MaidTask
 ]=]
-function OctreeRegionUtils.visualize(region, transparency, color, ontop)
+function OctreeRegionUtils.visualize(region)
 	local size = region.size
 	local position = region.position
 	local sx, sy, sz = size[1], size[2], size[3]
 	local px, py, pz = position[1], position[2], position[3]
 
-	local box = Draw.box(Vector3.new(px, py, pz), Vector3.new(sx, sy, sz), color, ontop)
+	local box = Draw.box(Vector3.new(px, py, pz), Vector3.new(sx, sy, sz))
 	box.Transparency = 0.9
-	box.BoxHandleAdornment.Transparency = transparency or 0.75
 	box.Name = "OctreeRegion_" .. tostring(region.depth)
 
 	return box
 end
 
---[=[
-	A Vector3 equivalent for octrees. This type is primarily internal and
-	used for faster access than a Vector3.
-
-	@type OctreeVector3 { [1]: number, [2]: number, [3]: number }
-	@within OctreeRegionUtils
-]=]
-
---[=[
-	An internal region which stores the data.
-
-	@interface OctreeRegion<T>
-	.subRegions { OctreeRegion<T> }
-	.lowerBounds OctreeVector3
-	.upperBounds OctreeVector3
-	.position OctreeVector3
-	.size OctreeVector3
-	.parent OctreeRegion<T>?
-	.parentIndex number
-	.depth number
-	.nodes { OctreeNode<T> }
-	.node_count number
-	@within OctreeRegionUtils
-]=]
-
---[=[
-	Creates a new OctreeRegion<T>
-
-	@param px number
-	@param py number
-	@param pz number
-	@param sx number
-	@param sy number
-	@param sz number
-	@param parent OctreeRegion<T>?
-	@param parentIndex number?
-	@return OctreeRegion<T>
-]=]
-local boxes = {};
 function OctreeRegionUtils.create(px, py, pz, sx, sy, sz, parent, parentIndex)
 	local hsx, hsy, hsz = sx/2, sy/2, sz/2
 
@@ -801,36 +572,14 @@ function OctreeRegionUtils.create(px, py, pz, sx, sy, sz, parent, parentIndex)
 		parent = parent;
 		depth = parent and (parent.depth + 1) or 1;
 		parentIndex = parentIndex;
-		nodes = {}; -- [node] = true (contains subchild nodes too)
+		nodes = {};
 		node_count = 0;
 	}
 
-	--[[
-	local map = {Color3.new(1, 0, 0),Color3.new(0, 0, 1), Color3.new(0, 1, 0), Color3.new(0.7, 0, 0.8)}
-	if (region.depth >= 1) then
-
-		local trans = 0.92;
-		if (region.depth >= 3) then
-			trans = 0.98;
-		end
-
-		OctreeRegionUtils.visualize(region, trans, map[#map-region.depth], false)
-
-	end
-	--]]
-	-- if region.depth >= 5 then
-	-- 	OctreeRegionUtils.visualize(region)
-	-- end
 
 	return region
 end
 
-
---[=[
-	Adds a node to the lowest subregion
-	@param lowestSubregion OctreeRegion<T>
-	@param node OctreeNode
-]=]
 function OctreeRegionUtils.addNode(lowestSubregion, node)
 	assert(node, "Bad node")
 
@@ -844,13 +593,6 @@ function OctreeRegionUtils.addNode(lowestSubregion, node)
 	end
 end
 
---[=[
-	Moves a node from one region to another
-
-	@param fromLowest OctreeRegion<T>
-	@param toLowest OctreeRegion<T>
-	@param node OctreeNode
-]=]
 function OctreeRegionUtils.moveNode(fromLowest, toLowest, node)
 	assert(fromLowest.depth == toLowest.depth, "fromLowest.depth ~= toLowest.depth")
 	assert(fromLowest ~= toLowest, "fromLowest == toLowest")
@@ -886,12 +628,6 @@ function OctreeRegionUtils.moveNode(fromLowest, toLowest, node)
 	end
 end
 
---[=[
-	Removes a node from the given region
-
-	@param lowestSubregion OctreeRegion<T>
-	@param node OctreeNode
-]=]
 function OctreeRegionUtils.removeNode(lowestSubregion, node)
 	assert(node, "Bad node")
 
@@ -914,38 +650,12 @@ function OctreeRegionUtils.removeNode(lowestSubregion, node)
 	end
 end
 
-
---[=[
-	Retrieves the search radius for a given radius given the region
-	diameter
-
-	@param radius number
-	@param diameter number
-	@param epsilon number
-	@return number
-]=]
 function OctreeRegionUtils.getSearchRadiusSquared(radius, diameter, epsilon)
 	local diagonal = SQRT_3_OVER_2*diameter
 	local searchRadius = radius + diagonal
 	return searchRadius*searchRadius + epsilon
 end
 
--- luacheck: push ignore
---[=[
-	Adds all octree nod values to objectsFound
-
-	See basic algorithm:
-	https://github.com/PointCloudLibrary/pcl/blob/29f192af57a3e7bdde6ff490669b211d8148378f/octree/include/pcl/octree/impl/octree_search.hpp#L309
-
-	@param region OctreeRegion<T>
-	@param radius number
-	@param px number
-	@param py number
-	@param pz number
-	@param objectsFound { T }
-	@param nodeDistances2 { number }
-	@param maxDepth number
-]=]
 function OctreeRegionUtils.getNeighborsWithinRadius(region, radius, px, py, pz, objectsFound, nodeDistances2, maxDepth)
 -- luacheck: pop
 	assert(maxDepth, "Bad maxDepth")
@@ -983,17 +693,6 @@ function OctreeRegionUtils.getNeighborsWithinRadius(region, radius, px, py, pz, 
 	end
 end
 
---[=[
-	Recursively ensures that a subregion exists at a given depth, and returns
-	that region for usage.
-
-	@param region OctreeRegion<T> -- Top level region
-	@param px number
-	@param py number
-	@param pz number
-	@param maxDepth number
-	@return OctreeRegion<T>
-]=]
 function OctreeRegionUtils.getOrCreateSubRegionAtDepth(region, px, py, pz, maxDepth)
 	local current = region
 	for _ = region.depth, maxDepth do
@@ -1012,12 +711,6 @@ function OctreeRegionUtils.getOrCreateSubRegionAtDepth(region, px, py, pz, maxDe
 	return current
 end
 
---[=[
-	Creates a subregion for an octree.
-	@param parentRegion OctreeRegion<T>
-	@param parentIndex number
-	@return OctreeRegion<T>
-]=]
 function OctreeRegionUtils.createSubRegion(parentRegion, parentIndex)
 	local size = parentRegion.size
 	local position = parentRegion.position
@@ -1031,17 +724,6 @@ function OctreeRegionUtils.createSubRegion(parentRegion, parentIndex)
 	return OctreeRegionUtils.create(px, py, pz, sx, sy, sz, parentRegion, parentIndex)
 end
 
---[=[
-	Computes whether a region is in bounds.
-
-	Consider regions to be range [px, y).
-
-	@param region OctreeRegion<T>
-	@param px number
-	@param py number
-	@param pz number
-	@return boolean
-]=]
 function OctreeRegionUtils.inRegionBounds(region, px, py, pz)
 	local lowerBounds = region.lowerBounds
 	local upperBounds = region.upperBounds
@@ -1052,15 +734,6 @@ function OctreeRegionUtils.inRegionBounds(region, px, py, pz)
 	)
 end
 
---[=[
-	Gets a subregion's internal index.
-
-	@param region OctreeRegion<T>
-	@param px number
-	@param py number
-	@param pz number
-	@return number
-]=]
 function OctreeRegionUtils.getSubRegionIndex(region, px, py, pz)
 	local index = px > region.position[1] and 1 or 2
 	if py <= region.position[2] then
@@ -1073,65 +746,27 @@ function OctreeRegionUtils.getSubRegionIndex(region, px, py, pz)
 	return index
 end
 
---[=[
-	This definitely collides fairly consistently
 
-	See: https://stackoverflow.com/questions/5928725/hashing-2d-3d-and-nd-vectors
-
-	@param cx number
-	@param cy number
-	@param cz number
-	@return number
-]=]
 function OctreeRegionUtils.getTopLevelRegionHash(cx, cy, cz)
 	-- Normally you would modulus this to hash table size, but we want as flat of a structure as possible
 	return cx * 73856093 + cy*19351301 + cz*83492791
 end
 
---[=[
-	Computes the index for a top level cell given a position
 
-	@param maxRegionSize OctreeVector3
-	@param px number
-	@param py number
-	@param pz number
-	@return number -- rpx
-	@return number -- rpy
-	@return number -- rpz
-]=]
 function OctreeRegionUtils.getTopLevelRegionCellIndex(maxRegionSize, px, py, pz)
 	return math.floor(px / maxRegionSize[1] + 0.5),
 		math.floor(py / maxRegionSize[2] + 0.5),
 		math.floor(pz / maxRegionSize[3] + 0.5)
 end
 
---[=[
-	Computes a top-level region's position
 
-	@param maxRegionSize OctreeVector3
-	@param cx number
-	@param cy number
-	@param cz number
-	@return number
-	@return number
-	@return number
-]=]
 function OctreeRegionUtils.getTopLevelRegionPosition(maxRegionSize, cx, cy, cz)
 	return maxRegionSize[1] * cx,
 		maxRegionSize[2] * cy,
 		maxRegionSize[3] * cz
 end
 
---[=[
-	Given a top-level region, returns if the region position are equal
-	to this region
 
-	@param region OctreeRegion<T>
-	@param rpx number
-	@param rpy number
-	@param rpz number
-	@return boolean
-]=]
 function OctreeRegionUtils.areEqualTopRegions(region, rpx, rpy, rpz)
 	local position = region.position
 	return position[1] == rpx
@@ -1139,16 +774,7 @@ function OctreeRegionUtils.areEqualTopRegions(region, rpx, rpy, rpz)
 		and position[3] == rpz
 end
 
---[=[
-	Given a world space position, finds the current region in the hashmap
 
-	@param regionHashMap { [number]: { OctreeRegion<T> } }
-	@param maxRegionSize OctreeVector3
-	@param px number
-	@param py number
-	@param pz number
-	@return OctreeRegion3?
-]=]
 function OctreeRegionUtils.findRegion(regionHashMap, maxRegionSize, px, py, pz)
 	local cx, cy, cz = OctreeRegionUtils.getTopLevelRegionCellIndex(maxRegionSize, px, py, pz)
 	local hash = OctreeRegionUtils.getTopLevelRegionHash(cx, cy, cz)
@@ -1168,16 +794,7 @@ function OctreeRegionUtils.findRegion(regionHashMap, maxRegionSize, px, py, pz)
 	return nil
 end
 
---[=[
-	Gets the current region for a position, or creates a new one.
 
-	@param regionHashMap { [number]: { OctreeRegion<T> } }
-	@param maxRegionSize OctreeVector3
-	@param px number
-	@param py number
-	@param pz number
-	@return OctreeRegion<T>
-]=]
 function OctreeRegionUtils.getOrCreateRegion(regionHashMap, maxRegionSize, px, py, pz)
 	local cx, cy, cz = OctreeRegionUtils.getTopLevelRegionCellIndex(maxRegionSize, px, py, pz)
 	local hash = OctreeRegionUtils.getTopLevelRegionHash(cx, cy, cz)
@@ -1203,41 +820,12 @@ function OctreeRegionUtils.getOrCreateRegion(regionHashMap, maxRegionSize, px, p
 	return region
 end
 
---[=[
-	# MODIFIED BY PLASMA_NODE #
-
-	Basic node interacting with the octree. See [Octree](/api/Octree) for usage.
-
-	```lua
-	local octree = Octree.new()
-	local node = octree:CreateNode(Vector3.new(0, 0, 0), "A")
-	print(octree:RadiusSearch(Vector3.new(0, 0, 0), 100)) --> { "A" }
-
-	node:Destroy() -- Remove node from octree
-
-	print(octree:RadiusSearch(Vector3.new(0, 0, 0), 100)) --> { }
-	```
-	@class OctreeNode
-]=]
 
 
 local OctreeNode = {}
 OctreeNode.ClassName = "OctreeNode"
 OctreeNode.__index = OctreeNode
 
---[=[
-	Creates a new for the given Octree with the object.
-
-	:::warning
-	Use Octree:CreateNode() for more consistent results. To use this object directly
-	you need to set the position before it's registered which may be unclean.
-	:::
-
-	@private
-	@param octree Octree
-	@param object T
-	@return OctreeNode<T>
-]=]
 function OctreeNode.new(octree, object)
 	local self = setmetatable({}, OctreeNode)
 
@@ -1250,21 +838,6 @@ function OctreeNode.new(octree, object)
 	return self
 end
 
---[=[
-	Finds the nearest neighbors to this node within the radius
-
-	```lua
-	local octree = Octree.new()
-	local node = octree:CreateNode(Vector3.new(0, 0, 0), "A")
-	octree:CreateNode(Vector3.new(0, 0, 5), "B")
-	print(octree:KNearestNeighborsSearch(10, 100)) --> { "A", "B" } { 0, 25 }
-	```
-
-	@param k number -- The number to retrieve
-	@param radius number -- The radius to search in
-	@return { T } -- Objects found, including self
-	@return { number } -- Distances squared
-]=]
 function OctreeNode:KNearestNeighborsSearch(k, radius)
 	return self._octree:KNearestNeighborsSearch(self._position, k, radius)
 end
@@ -1372,12 +945,18 @@ function OctreeNode:Destroy()
 	end
 end
 
+
 local EPSILON = 1e-9
 
 local Octree = {}
 Octree.ClassName = "Octree"
 Octree.__index = Octree
 
+--[=[
+	Constructs a new Octree.
+
+	@return Octree<T>
+]=]
 function Octree.new()
 	local self = setmetatable({}, Octree)
 
@@ -1388,6 +967,24 @@ function Octree.new()
 	return self
 end
 
+--[=[
+	Returns all octree nodes stored in the octree!
+
+	```lua
+	local octree = Octree.new()
+	octree:CreateNode(Vector3.new(0, 0, 0), "Hi")
+	octree:CreateNode(Vector3.new(0, 0, 0), "Bob")
+	print(octree:GetAllNodes()) --> { "Hi", "Bob" }
+	```
+
+	Order is not guaranteed.
+
+	:::warning
+	If you have 100,000 nodes in your octree, this is going to be very slow.
+	:::
+
+	@return { OctreeNode<T> }
+]=]
 function Octree:GetAllNodes()
 	local options = {}
 
@@ -1402,6 +999,24 @@ function Octree:GetAllNodes()
 	return options
 end
 
+--[=[
+	Creates a new OctreeNode at the given position which can be retrieved
+
+	:::tip
+	Be sure to call :Destroy() on a node if the data becomes stale. Note that
+	this is not necessary if the whole octree is removed from memory.
+	:::
+
+	```lua
+	local octree = Octree.new()
+	octree:CreateNode(Vector3.new(0, 0, 0), "A")
+	octree:CreateNode(Vector3.new(0, 0, 0), "B")
+	```
+
+	@param position Vector3
+	@param object T
+	@return OctreeNode<T>
+]=]
 function Octree:CreateNode(position, object)
 	assert(typeof(position) == "Vector3", "Bad position value")
 	assert(object, "Bad object value")
@@ -1413,17 +1028,46 @@ function Octree:CreateNode(position, object)
 	return node
 end
 
+--[=[
+	Searches at the position and radius for any objects that may be within
+	this radius.
+
+	```lua
+	local octree = Octree.new()
+	octree:CreateNode(Vector3.new(0, 0, 0), "A")
+	octree:CreateNode(Vector3.new(0, 0, 0), "B")
+	octree:CreateNode(Vector3.new(0, 0, 1000), "C")
+	print(octree:RadiusSearch(Vector3.new(0, 0, 0), 100)) --> { "A", "B" }
+	```
+
+	@param position Vector3
+	@param radius number
+	@return { T } -- Objects found
+	@return { number } -- Distances squared
+]=]
 function Octree:RadiusSearch(position, radius)
-	assert(typeof(position) == "Vector3")
-	assert(type(radius) == "number")
+	assert(typeof(position) == "Vector3", "Bad position")
+	assert(type(radius) == "number", "Bad radius")
 
 	local px, py, pz = position.x, position.y, position.z
 	return self:_radiusSearch(px, py, pz, radius)
 end
 
+--[=[
+	Searches at the position and radius for any objects that may be within
+	this radius. Returns the knearest entries.
+
+	The closest entities will be first in the list.
+
+	@param position Vector3
+	@param k number -- Number of objects to find
+	@param radius number
+	@return { any } -- Objects found
+	@return { number } -- Distances squared
+]=]
 function Octree:KNearestNeighborsSearch(position, k, radius)
-	assert(typeof(position) == "Vector3")
-	assert(type(radius) == "number")
+	assert(typeof(position) == "Vector3", "Bad position")
+	assert(type(radius) == "number", "Bad radius")
 
 	local px, py, pz = position.x, position.y, position.z
 	local objects, nodeDistances2 = self:_radiusSearch(px, py, pz, radius)
@@ -1451,6 +1095,15 @@ function Octree:KNearestNeighborsSearch(position, k, radius)
 	return knearest, knearestDist2
 end
 
+--[=[
+	Internal API to create lowest subregion
+
+	@private
+	@param px number
+	@param py number
+	@param pz number
+	@return OctreeSubregion
+]=]
 function Octree:GetOrCreateLowestSubRegion(px, py, pz)
 	local region = self:_getOrCreateRegion(px, py, pz)
 	return OctreeRegionUtils.getOrCreateSubRegionAtDepth(region, px, py, pz, self._maxDepth)
