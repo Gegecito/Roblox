@@ -80,3 +80,5 @@ local function serialize_table(t, p, c, s)
 
     return ('{' .. (e and '\n' or '')) .. str .. (e and s('  ', p - 1) or '') .. '}'
 end
+
+return serialize_table
